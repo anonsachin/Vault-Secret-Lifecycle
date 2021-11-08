@@ -5,7 +5,7 @@ import (
 	vault "github.com/hashicorp/vault/api"
 )
 
-func GetConfig() *vault.Config{
+func GetConfig() *vault.Config {
 	fmt.Println("Gettig config")
 	return vault.DefaultConfig()
 }
