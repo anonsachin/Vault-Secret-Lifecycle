@@ -35,7 +35,7 @@ func Token(tokenWatcher *vault.LifetimeWatcher) {
 			return
 		// Renewal success channel.
 		case renew := <- tokenWatcher.RenewCh():
-			fmt.Printf("Successfully renewed: %#v \n", renew)
+			fmt.Printf("Successfully renewed at: %s \n", renew.RenewedAt)
 		// Ctrl + c handling.
 		case close := <- ctrlC:
 			fmt.Printf("We are closing the renewal %v \n",close)
