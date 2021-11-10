@@ -1,4 +1,7 @@
-
+variable "org_name" {
+  description = "The name of the org to whom the CA belongs to."
+  type        = string
+}
 variable "key_type" {
   description = "The family of the encryption algorithm."
   type        = string

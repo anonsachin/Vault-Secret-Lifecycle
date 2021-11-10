@@ -1,6 +1,6 @@
 resource "vault_pki_secret_backend_role" "fabric-client" {
   backend                            = var.backend_id
-  name                               = "client"
+  name                               = var.role_name
   generate_lease                     = true
   allow_localhost                    = true
   allow_subdomains                   = true

@@ -3,42 +3,37 @@ package autorenew
 import (
 	"fmt"
 	"os"
-	"os/signal"
 
 	vault "github.com/hashicorp/vault/api"
 )
 
-//Token handles the management of the token by renewing it
+//Secret handles the management of the secret by renewing it
 // and keeping it valid and usable
-func Token(tokenWatcher *vault.LifetimeWatcher) {
-	fmt.Println("Strating auto renew of token")
+func Secret(name string, secretWatcher *vault.LifetimeWatcher, interrupt chan os.Signal) {
+	fmt.Printf("Strating auto renew of secret %s\n", name)
 
 	// Starting the go routines for managing renewals.
-	go tokenWatcher.Start()
-	defer tokenWatcher.Stop()
-
-	// For handling ctrl+c.
-	ctrlC := make(chan os.Signal)
-	signal.Notify(ctrlC, os.Interrupt)
+	go secretWatcher.Start()
+	defer secretWatcher.Stop()
 
 	for {
 		select {
 		// Renewal error channel.
-		case err := <-tokenWatcher.DoneCh():
+		case err := <-secretWatcher.DoneCh():
 			if err != nil {
 				// Error when trying to renew.
 				fmt.Printf("Unexpected error occured %#v \n", err)
 				return
 			}
-			// Handles case when the token is no longer allowed to renew.
+			// Handles case when the secret is no longer allowed to renew.
 			fmt.Println("Failed to renew. Try re-login.")
 			return
 		// Renewal success channel.
-		case renew := <-tokenWatcher.RenewCh():
-			fmt.Printf("Successfully renewed at: %s \n", renew.RenewedAt)
+		case renew := <-secretWatcher.RenewCh():
+			fmt.Printf("Successfully renewed %s at: %s \n", name, renew.RenewedAt)
 		// Ctrl + c handling.
-		case close := <-ctrlC:
-			fmt.Printf("We are closing the renewal %v \n", close)
+		case close := <-interrupt:
+			fmt.Printf("We are closing the renewal of %s %v \n", name, close)
 			return
 		}
 	}

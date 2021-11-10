@@ -2,6 +2,13 @@ variable "backend_id" {
   description = "The id of the pki engine to link it to."
   type        = string
 }
+
+variable "role_name" {
+  description = "The name of the vault role."
+  type        = string
+  default     = "client"
+}
+
 variable "base_domain" {
   description = "The base domain the certificate is to be linked to."
   type        = list(string)
