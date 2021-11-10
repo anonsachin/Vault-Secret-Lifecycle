@@ -4,20 +4,20 @@ variable "org_name" {
   default     = "NewOrg"
 }
 
-variable "ca_type" {
-  description = "The type of ca for the PKI"
+variable "base_domain" {
+  description = "The base domain for peers"
+  type        = list(string)
+  default     = ["service.consul"]
+}
+
+variable "key_type" {
+  description = "The family of the encryption algorithm."
   type        = string
-  default     = "internal"
+  default     = "ec"
 }
 
 variable "key_bits" {
   description = "The size of the encryption algorithm"
   type        = number
   default     = 256
-}
-
-variable "base_domain" {
-  description = "The base domain for peers"
-  type        = list(string)
-  default     = ["service.consul"]
 }

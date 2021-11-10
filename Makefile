@@ -4,6 +4,12 @@ build:
 run:
 	VAULT_ADDR=http://127.0.0.1:8200 go run ./cmd/renew/main.go
 
+fmt:
+	terraform fmt -recursive
+	go fmt ./...
+
+# VAULT
+
 vault-dev:
 	#vault server -dev -dev-root-token-id="myroot"
 	(cd vault; docker-compose up -d)
@@ -13,3 +19,8 @@ vault-dev-down:
 
 vault-token:
 	VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=myroot vault token create -policy=root -orphan -period=1m
+
+# Terraform
+
+init:
+	(cd vault-setup; terraform init)
