@@ -1,4 +1,4 @@
-# Vault Renew
+# Vault Secret Lifecycle
 
 Example on how to manage vault secrets and lifecycle them properly.
 
@@ -19,6 +19,7 @@ Example on how to manage vault secrets and lifecycle them properly.
 - Genrate a renewable periodic token. Command - `make vault-token`
 - Use the genrated token in the program. `export VAULT_TOKEN=... `
 - Run the code. Commmand - `make run`
+- `Ctrl + c` twice to stop the renewal.
 
 --------------------------------------------------------------------
 
