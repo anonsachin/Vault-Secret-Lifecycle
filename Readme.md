@@ -15,11 +15,12 @@ Example on how to manage vault secrets and lifecycle them properly.
 ## Steps
 
 - Start the vault container. Command - `make vault-dev`
-- Configure Vault.
+- Configure Vault. Command - `make init` & `make apply`
 - Genrate a renewable periodic token. Command - `make vault-token`
 - Use the genrated token in the program. `export VAULT_TOKEN=... `
 - Run the code. Commmand - `make run`
 - `Ctrl + c` twice to stop the renewal.
+- Clean up the vault env. Commad - `make destroy` & `make vault-dev-down`
 
 --------------------------------------------------------------------
 
