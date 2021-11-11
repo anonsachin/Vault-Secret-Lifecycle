@@ -1,6 +1,6 @@
 # Vault Renew
 
-Looking at how to manage vault secrets and lifecycle them properly.
+Example on how to manage vault secrets and lifecycle them properly.
 
 --------------------------------------------------------------------
 
@@ -19,6 +19,15 @@ Looking at how to manage vault secrets and lifecycle them properly.
 - Genrate a renewable periodic token. Command - `make vault-token`
 - Use the genrated token in the program. `export VAULT_TOKEN=... `
 - Run the code. Commmand - `make run`
+
+--------------------------------------------------------------------
+
+## Resources
+- Vault token API Docs
+    - [Token renew](https://www.vaultproject.io/api/auth/token#renew-a-token-self)
+    - [Generate certs](https://www.vaultproject.io/api-docs/secret/pki#generate-certificate)
+    - [PKI engine](https://learn.hashicorp.com/tutorials/vault/pki-engine)
+    - [Tokens](https://www.vaultproject.io/docs/concepts/tokens)
 
 --------------------------------------------------------------------
 
