@@ -42,7 +42,7 @@ func main() {
 		Secret: auth,
 	})
 	// Running token renewal on a different thread
-	go autorenew.Secret("Token", watcher,ctrlC)
+	go autorenew.Secret("Token", watcher, ctrlC)
 
 	// Generating certs
 	certs, err := client.Logical().Write("NewOrgCA/issue/client", map[string]interface{}{
@@ -72,6 +72,6 @@ func main() {
 	}
 
 	// Running the certs renewal
-	autorenew.Secret("Certificate", certWatcher,ctrlC)
+	autorenew.Secret("Certificate", certWatcher, ctrlC)
 
 }
