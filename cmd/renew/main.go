@@ -20,7 +20,7 @@ func main() {
 	}
 
 	//  Channel for interrupt handling
-	ctrlC := make(chan os.Signal)
+	ctrlC := make(chan os.Signal,2)
 	signal.Notify(ctrlC, os.Interrupt)
 
 	renew := client.Token()
@@ -41,15 +41,22 @@ func main() {
 	watcher, err := client.NewLifetimeWatcher(&vault.LifetimeWatcherInput{
 		Secret: auth,
 	})
+
+	if err != nil {
+		fmt.Printf("Unable to create watcher for auth %v\n", err)
+		os.Exit(1)
+	}
 	// Running token renewal on a different thread
-	go autorenew.Secret("Token", watcher, ctrlC)
+	go autorenew.Token("Token", watcher, ctrlC)
 
 	// Generating certs
-	certs, err := client.Logical().Write("NewOrgCA/issue/client", map[string]interface{}{
+	certsPath := "NewOrgCA/issue/client"
+	certsData := map[string]interface{}{
 		"ttl":         "60",
 		"common_name": "vault.service.consul",
 		"alt_names":   "localhost",
-	})
+	}
+	certs, err := client.Logical().Write(certsPath, certsData)
 
 	if err != nil {
 		fmt.Printf("Unable to write to secret %v\n", err)
@@ -61,17 +68,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// watcher for certs
-	certWatcher, err := client.NewLifetimeWatcher(&vault.LifetimeWatcherInput{
-		Secret: auth,
-	})
-
-	if err != nil {
-		fmt.Printf("Unable to write to secret %v\n", err)
-		os.Exit(1)
-	}
-
 	// Running the certs renewal
-	autorenew.Secret("Certificate", certWatcher, ctrlC)
+	autorenew.Certs("Certificate", certs, ctrlC, client, certsPath, certsData)
 
 }

@@ -1,3 +1,5 @@
+# BASE
+#-----
 build:
 	GOROOT=${PWD} go install ./cmd/renew
 
@@ -8,7 +10,11 @@ fmt:
 	terraform fmt -recursive
 	go fmt ./...
 
+docker-lint:
+	docker run --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v1.33.0 golangci-lint run -v --enable gosec
+
 # VAULT
+#------
 vault-dev:
 	#vault server -dev -dev-root-token-id="myroot"
 	(cd vault; docker-compose up -d)
@@ -21,6 +27,7 @@ vault-token:
 
 
 # Terraform
+#----------
 init:
 	(cd vault-setup; terraform init)
 

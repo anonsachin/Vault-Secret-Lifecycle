@@ -7,9 +7,9 @@ import (
 	vault "github.com/hashicorp/vault/api"
 )
 
-//Secret handles the management of the secret by renewing it
+//Token handles the management of the tokens by renewing it
 // and keeping it valid and usable
-func Secret(name string, secretWatcher *vault.LifetimeWatcher, interrupt chan os.Signal) {
+func Token(name string, secretWatcher *vault.LifetimeWatcher, interrupt chan os.Signal) {
 	fmt.Printf("Strating auto renew of secret %s\n", name)
 
 	// Starting the go routines for managing renewals.
