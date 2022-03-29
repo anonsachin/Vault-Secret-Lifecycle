@@ -1,13 +1,13 @@
 package autorenew
 
 import (
+	"context"
 	"fmt"
-	"os"
 
 	vault "github.com/hashicorp/vault/api"
 )
 
-func Certs(name string, certs *vault.Secret, interrupt chan os.Signal, client *vault.Client, certPath string, certsData map[string]interface{}) {
+func Certs(name string, certs *vault.Secret, ctx context.Context, client *vault.Client, certPath string, certsData map[string]interface{}) {
 	fmt.Printf("Strating auto renew of secret %s\n", name)
 
 	secretWatcher, err := client.NewLifetimeWatcher(&vault.LifetimeWatcherInput{
@@ -54,7 +54,7 @@ func Certs(name string, certs *vault.Secret, interrupt chan os.Signal, client *v
 
 			fmt.Printf("The new certs serial number is %s \n", certs.Data["serial_number"])
 
-			// New watcher for cewrts
+			// New watcher for certs
 			secretWatcher, err = client.NewLifetimeWatcher(&vault.LifetimeWatcherInput{
 				Secret: certs,
 			})
@@ -65,9 +65,9 @@ func Certs(name string, certs *vault.Secret, interrupt chan os.Signal, client *v
 			}
 
 			fmt.Println("New Watcher created")
-
-		case close := <-interrupt:
-			fmt.Printf("We are closing the renewal of %s %v \n", name, close)
+		// Ctrl + c handling.
+		case <-ctx.Done():
+			fmt.Printf("We are closing the renewal of %s \n", name)
 			return
 		}
 	}

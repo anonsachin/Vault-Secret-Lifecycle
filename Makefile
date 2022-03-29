@@ -23,7 +23,7 @@ vault-dev-down:
 	(cd vault; docker-compose down -v)
 
 vault-token:
-	VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=myroot vault token create -policy=root -orphan -period=1m
+	VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=myroot vault token create -policy=root -orphan -period=1m -renewable
 
 
 # Terraform

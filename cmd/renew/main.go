@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"main/pkg/autorenew"
 	"main/pkg/config"
 	"os"
 	"os/signal"
+	"time"
 
 	vault "github.com/hashicorp/vault/api"
 )
@@ -23,19 +25,17 @@ func main() {
 	ctrlC := make(chan os.Signal,2)
 	signal.Notify(ctrlC, os.Interrupt)
 
+	ctx, cancel := context.WithCancel(context.Background())
+
 	renew := client.Token()
 
 	fmt.Printf("The token is %#v \n", renew)
 
-	auth, err := client.Logical().Write("auth/token/renew-self", map[string]interface{}{})
+	auth, err := client.Auth().Token().RenewSelf(0)
 
 	if err != nil {
 		fmt.Printf("Unable to renew %v\n", err)
 		os.Exit(1)
-	}
-
-	if !auth.Auth.Renewable {
-		fmt.Println("The token is not renewable error ")
 	}
 
 	watcher, err := client.NewLifetimeWatcher(&vault.LifetimeWatcherInput{
@@ -47,7 +47,7 @@ func main() {
 		os.Exit(1)
 	}
 	// Running token renewal on a different thread
-	go autorenew.Token("Token", watcher, ctrlC)
+	go autorenew.Token("Token", watcher, ctx)
 
 	// Generating certs
 	certsPath := "NewOrgCA/issue/client"
@@ -69,6 +69,14 @@ func main() {
 	}
 
 	// Running the certs renewal
-	autorenew.Certs("Certificate", certs, ctrlC, client, certsPath, certsData)
+	go autorenew.Certs("Certificate", certs, ctx, client, certsPath, certsData)
+
+
+	<- ctrlC
+	fmt.Println("Defering cancel now")
+	cancel()
+	fmt.Println("Cancel called")
+	// Just to allow the cancel output to be printed
+	time.Sleep(1 *time.Millisecond)
 
 }

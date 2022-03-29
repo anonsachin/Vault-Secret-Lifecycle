@@ -1,6 +1,11 @@
 TO-DO
 =====
-- [ ] Add single `ctrl +c` to stop both.
+- [X] Add single `ctrl +c` to stop both.
+
+
+FEATURE 15/11/2021
+==================
+- Added context to handle management of both cert and token renewal threads
 
 
 FEATURE 15/11/2021
